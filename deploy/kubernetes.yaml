@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: 19-artifact-registry-data
+  name: artifact-integrity-registry-data
 spec:
   accessModes: [ReadWriteOnce]
   resources:
@@ -11,18 +11,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: 19-artifact-registry
+  name: artifact-integrity-registry
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: 19-artifact-registry
+      app: artifact-integrity-registry
   template:
     metadata:
       labels:
-        app: 19-artifact-registry
+        app: artifact-integrity-registry
     spec:
       securityContext:
         runAsNonRoot: true
@@ -30,7 +30,7 @@ spec:
         fsGroup: 10001
       containers:
         - name: app
-          image: 19-artifact-registry:local
+          image: artifact-integrity-registry:local
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8119
@@ -60,15 +60,15 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: 19-artifact-registry-data
+            claimName: artifact-integrity-registry-data
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: 19-artifact-registry
+  name: artifact-integrity-registry
 spec:
   selector:
-    app: 19-artifact-registry
+    app: artifact-integrity-registry
   ports:
     - port: 80
       targetPort: 8119

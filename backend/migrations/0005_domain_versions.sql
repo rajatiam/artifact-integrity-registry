@@ -1,0 +1,1 @@
+UPDATE records SET body=json_remove(json_set(body, '$.artifact_version', json_extract(body, '$.version')), '$.version') WHERE json_type(body, '$.version')='text' AND json_type(body, '$.artifact_version') IS NULL;
