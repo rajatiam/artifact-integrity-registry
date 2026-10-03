@@ -1,0 +1,33 @@
+{
+  "name": "Artifact Registry",
+  "kind": "artifacts",
+  "entity": "artifact",
+  "accent": "#4f46e5",
+  "skills": "Immutable versions, SHA-256 integrity, downloadable assets, API design",
+  "description": "Store immutable text artifacts and verify their content integrity.",
+  "example": {
+    "name": "hello-service",
+    "version": "1.0.0",
+    "content": "print(\"Hello from Python\")"
+  },
+  "port": 8119,
+  "fields": [
+    "name",
+    "version",
+    "content"
+  ],
+  "stack": [
+    "Python",
+    "FastAPI",
+    "Angular",
+    "TypeScript",
+    "SQLite",
+    "Docker",
+    "Kubernetes",
+    "GitHub Actions"
+  ],
+  "demo_action": "verify",
+  "demo_expected": {
+    "verified": true
+  }
+}

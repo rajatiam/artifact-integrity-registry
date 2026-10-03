@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: 19-artifact-registry-data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 19-artifact-registry
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: 19-artifact-registry
+  template:
+    metadata:
+      labels:
+        app: 19-artifact-registry
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+      containers:
+        - name: app
+          image: 19-artifact-registry:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8119
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8119
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8119
+            initialDelaySeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: 19-artifact-registry-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: 19-artifact-registry
+spec:
+  selector:
+    app: 19-artifact-registry
+  ports:
+    - port: 80
+      targetPort: 8119
